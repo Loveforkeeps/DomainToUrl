@@ -4,7 +4,6 @@
 import http.client,sys
 import threading
 import threadpool
-import csv
 from functools import wraps
 import datetime
 
@@ -49,7 +48,7 @@ def get_url(host):
 @timethis
 def main():
     thdpol = threadpool.ThreadPool(10)
-    if not sys.argv[1][-4:] == "list":
+    if not (sys.argv[1][-4:] == "list" or sys.argv[1][-3:] == "txt"):
         get_url(sys.argv[1])
     else:
         try:
@@ -61,8 +60,7 @@ def main():
                     thdpol.putRequest(request)
                 thdpol.wait()
         finally:
-            print(datas)
-            print(len(datas))
+            print(datas,len(datas))
 
 if __name__ == '__main__':
     main()
