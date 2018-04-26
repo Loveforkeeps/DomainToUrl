@@ -62,7 +62,7 @@ def main():
         finally:
             print(datas,len(datas))
             with open("url.list","w") as f:
-                f.writelines(datas)
+                f.writelines('\n'.join(datas))
 
 if __name__ == '__main__':
     main()
