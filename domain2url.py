@@ -41,7 +41,7 @@ def get_url(host):
         ret = "http://"+host
     except Exception as TE:
         print(("3",host,TE))
-        ret = "https://"+host
+        ret = "https://www."+host
     datas.append(ret)
     print(ret)
 
@@ -61,6 +61,8 @@ def main():
                 thdpol.wait()
         finally:
             print(datas,len(datas))
+            with open("url.list","w") as f:
+                f.writelines(datas)
 
 if __name__ == '__main__':
     main()
