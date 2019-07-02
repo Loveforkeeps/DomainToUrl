@@ -18,6 +18,7 @@ def functime(func):
         times = (datetime.datetime.now() - local_time).seconds
         print('Run time is {} minutes {} seconds'.format(
             times // 60, times % 60))
+
     return wap
 
 
@@ -42,7 +43,6 @@ class GetUrl():
 
     # 请求设置
     timeout = 15
-
 
     def __init__(self, domain):
         self.domain = domain
@@ -84,20 +84,28 @@ class GetUrl():
         try:
             _hr = conn.getresponse()
             if _hr.status in [301, 302, 307, 308]:
-                ret = _hr.getheader('Location')
+                location = _hr.getheader('Location')
                 print(host, _hr.status, _hr.reason)
-            if _hr.status >= 400 or _hr.status >= 500:
-                print(host, _hr.status, _hr.reason)
-                try:
-                    conn = self.get_conn()
-                    conn.request('GET', '', headers=self.Headers)
-                    _hr = conn.getresponse()
-                    if _hr.status in [301, 302, 307, 308]:
-                        ret = _hr.getheader('Location')
-                except Exception as e:
-                    print(host, e)
+            else:
+                if _hr.status >= 400 or _hr.status >= 500:
+                    print(host, _hr.status, _hr.reason)
+                    try:
+                        conn = self.get_conn()
+                        conn.request('GET', '', headers=self.Headers)
+                        _hr = conn.getresponse()
+                        if _hr.status in [301, 302, 307, 308]:
+                            location = _hr.getheader('Location')
+                    except Exception as e:
+                        print(host, e)
+            if 'location' in locals():
+                if location[0] == '/':
+                    ret = ret + location
+                else:
+                    ret = location       
         finally:
             return ret
+    
+    
 
     def get_conn(self, host=None):
         """ 获取配置好的HTTPConnection """
@@ -117,7 +125,7 @@ def worker(domain):
     a = GetUrl(domain)
     # print(a.url)
     global urllist
-    urllist.append(a.url)
+    urllist.append(a.domain + ' : ' + a.url)
     return a.url
 
 
@@ -144,10 +152,9 @@ def main():
         except KeyboardInterrupt:
             sys.exit(127)
         finally:
-            print(urllist,len(urllist))
-            with open(args.file.name+'.url.txt','w') as f:
+            print(urllist, len(urllist))
+            with open(args.file.name + '.url.txt', 'w') as f:
                 f.writelines('\n'.join(urllist))
-
 
 
 if __name__ == '__main__':
@@ -172,7 +179,7 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    print(args)
+    # print(args)
     # Url结果存放
     urllist = list()
     main()
