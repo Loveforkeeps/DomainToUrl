@@ -101,7 +101,10 @@ class GetUrl():
                 if location[0] == '/':
                     ret = ret + location
                 else:
-                    ret = location       
+                    if 'http://' in location:
+                        ret = location
+                    else:
+                        ret = ret + '/' + location
         finally:
             return ret
     
