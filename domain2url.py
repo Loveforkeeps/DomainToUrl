@@ -98,10 +98,10 @@ class GetUrl():
                     except Exception as e:
                         print(host, e)
             if 'location' in locals():
-                if location[0] == '/':
+                if location.startswith("/"):
                     ret = ret + location
                 else:
-                    if 'http://' in location:
+                    if location.startswith("http://") or location.startswith("https://"):
                         ret = location
                     else:
                         ret = ret + '/' + location
