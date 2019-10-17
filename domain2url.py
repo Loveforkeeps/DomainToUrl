@@ -8,7 +8,7 @@ import datetime
 from socket import timeout as TIMEOUT_ERRO
 from socket import gaierror as GETADDRINFO_ERRO
 import argparse
-
+from urllib.parse import urljoin
 
 # 时间装饰器
 def functime(func):
@@ -98,13 +98,10 @@ class GetUrl():
                     except Exception as e:
                         print(host, e)
             if 'location' in locals():
-                if location.startswith("/"):
-                    ret = ret + location
+                if location.startswith("http://") or location.startswith("https://"):
+                    ret = location
                 else:
-                    if location.startswith("http://") or location.startswith("https://"):
-                        ret = location
-                    else:
-                        ret = ret + '/' + location
+                    ret = urljoin(ret,location)
         finally:
             return ret
     
